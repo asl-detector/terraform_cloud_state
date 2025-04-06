@@ -1,0 +1,39 @@
+version: 0.1
+resource_usage:
+  aws_s3_bucket.terraform_state:
+    standard:
+      storage_gb: 5
+      monthly_tier_1_requests: 1000  # GET, LIST, etc.
+      monthly_tier_2_requests: 500   # PUT, COPY, POST, etc.
+      
+    glacier_flexible_retrieval:
+      storage_gb: 5 # Assuming some older state files transition to glacier
+      monthly_tier_1_requests: 50 # Limited PUT/LIST operations for glacier objects
+      monthly_tier_2_requests: 20 # Occasional retrieval requests
+      monthly_lifecycle_transition_requests: 100 # Based on noncurrent_version_transition after 7 days
+      monthly_standard_select_data_scanned_gb: 0.5 # Minimal data scanning
+      monthly_standard_select_data_returned_gb: 0.2 # Small amount of data returned
+      monthly_bulk_select_data_scanned_gb: 0 # Not likely using bulk operations
+      monthly_bulk_select_data_returned_gb: 0 # Not likely using bulk operations
+      monthly_expedited_select_data_scanned_gb: 0 # Not likely using expedited operations
+      monthly_expedited_select_data_returned_gb: 0 # Not likely using expedited operations
+      monthly_standard_data_retrieval_requests: 10 # Occasional retrievals of old state
+      monthly_expedited_data_retrieval_requests: 0 # Expedited retrieval unlikely needed
+      monthly_standard_data_retrieval_gb: 0.5 # Small amount of data retrieved
+      monthly_expedited_data_retrieval_gb: 0 # No expedited retrievals expected
+      early_delete_gb: 0 # Assuming objects stay in glacier until 90-day expiration
+    
+  aws_s3_bucket_lifecycle_configuration.terraform_state_lifecycle:
+    # No separate usage parameters needed
+
+  aws_s3_bucket_server_side_encryption_configuration.terraform_state_encryption:
+    # No separate usage parameters needed
+
+  aws_s3_bucket_versioning.terraform_state_versioning:
+    # No separate usage parameters needed
+    
+  aws_s3_bucket_public_access_block.terraform_state_public_access:
+    # No separate usage parameters needed
+    
+  aws_s3_bucket_policy.terraform_state_policy:
+    # No separate usage parameters needed
